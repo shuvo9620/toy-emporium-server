@@ -48,9 +48,9 @@ async function run() {
         //search
         app.get('/searchToy/:name', async (req, res) => {
             const searchName = req.params.name;
-            const result = await toyCollection.find({
-                "name": { $regex: searchName, $options: "i" }
-            }).toArray();
+            const result = await toyCollection
+                .find({ name: { $regex: searchName, $options: 'i' } })
+                .toArray();
             res.send(result);
             console.log(result);
         });
@@ -59,6 +59,14 @@ async function run() {
         app.get('/allToy', async (req, res) => {
             const limitToy = parseInt(req.query.limit);
             const result = await toyCollection.find({}).limit(limitToy).toArray();
+            res.send(result);
+        });
+
+        //add a toy
+        app.post('/addToy', async (req, res) => {
+            console.log(req.body)
+            const addToy = req.body;
+            const result = await toyCollection.insertOne(addToy);
             res.send(result);
         });
 
