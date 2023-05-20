@@ -52,6 +52,14 @@ async function run() {
                 "name": { $regex: searchName, $options: "i" }
             }).toArray();
             res.send(result);
+            console.log(result);
+        });
+
+        //limit
+        app.get('/allToy', async (req, res) => {
+            const limitToy = parseInt(req.query.limit);
+            const result = await toyCollection.find({}).limit(limitToy).toArray();
+            res.send(result);
         });
 
 
