@@ -45,6 +45,14 @@ async function run() {
             const result = await toyCollection.findOne(query);
             res.send(result);
         })
+        //search
+        app.get('/searchToy/:name', async (req, res) => {
+            const searchName = req.params.name;
+            const result = await toyCollection.find({
+                "name": { $regex: searchName, $options: "i" }
+            }).toArray();
+            res.send(result);
+        });
 
 
         // Send a ping to confirm a successful connection
