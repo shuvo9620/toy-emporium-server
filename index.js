@@ -98,7 +98,29 @@ async function run() {
                 res.status(500).send('Internal Server');
             }
         });
+        // update method
+        app.put('/updateToy/:id', async (req, res) => {
+            const id = req.params.id;
+            const bodyField = req.body;
+            const filterById = { _id: new ObjectId(id) };
+            const updateMyToy = {
+                $set: {
+                    "price": bodyField.price,
+                    "quantity": bodyField.quantity,
+                    "description": bodyField.description,
+                }
+            };
+            const result = await toyCollection.updateOne(filterById, updateMyToy);
+            res.send(result);
+        });
 
+        // Delete
+        app.delete('/delete/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await toyCollection.deleteOne(query);
+            res.send(result);
+        });
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
