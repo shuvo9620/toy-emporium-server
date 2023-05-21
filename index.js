@@ -70,6 +70,35 @@ async function run() {
             res.send(result);
         });
 
+        app.get('/my_toy/:email', async (req, res) => {
+            const { sortBy: sortByPrice, sortOrder: sortingOrder } = req.query;
+            const sortingOptions = {};
+
+            if (sortByPrice === "price") {
+                sortingOptions["price"] = sortingOrder === 'desc' ? -1 : 1;
+            }
+
+            try {
+                const result = await toyCollection
+                    .find({ 'sellerEmail': req.params.email })
+                    .toArray();
+
+                result.forEach(toys => {
+                    toys.price = parseInt(toys.price);
+                });
+
+                if (sortByPrice === "price") {
+                    result.sort((x, y) => {
+                        return sortingOrder === 'desc' ? y.price - x.price : x.price - y.price;
+                    });
+                }
+                res.send(result);
+            } catch (error) {
+                console.error('Error retrieving:', error);
+                res.status(500).send('Internal Server');
+            }
+        });
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
